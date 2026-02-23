@@ -6,10 +6,12 @@ public class SmartDoorLockImpl implements SmartDoorLock {
     private Optional<Integer> pin = Optional.empty();
     private boolean isLock;
     private int countFailedAttempt = 0;
+    private static final int MIN_PIN = 0;
+    private static final int MAX_PIN = 9999;
 
     @Override
     public void setPin(int pin) {
-        this.pin = (this.isLock) ? this.pin : Optional.of(pin);
+        this.pin = (!isLock && pin >= MIN_PIN && pin <= MAX_PIN) ? Optional.of(pin) : Optional.empty();
     }
 
     @Override
@@ -40,7 +42,7 @@ public class SmartDoorLockImpl implements SmartDoorLock {
 
     @Override
     public int getMaxAttempts() {
-        return 0;
+        return 3;
     }
 
     @Override
