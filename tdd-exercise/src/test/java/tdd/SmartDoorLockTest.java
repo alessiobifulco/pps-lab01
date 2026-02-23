@@ -18,6 +18,25 @@ public class SmartDoorLockTest {
         assertThrows(IllegalStateException.class, lock::lock);
     }
 
+    @Test
+    void smartDoorLockShouldBeLockWithPin(){
+        SmartDoorLock lock = new SmartDoorLockImpl();
+        lock.setPin(1234);
+        lock.lock();
+        assertTrue(lock.isLocked());
+    }
+
+    @Test
+    void smartDoorLockShouldBeUnlockAfterLock(){
+        SmartDoorLock lock = new SmartDoorLockImpl();
+        lock.setPin(1234);
+        lock.lock();
+        lock.unlock(1234);
+        assertFalse(lock.isLocked());
+    }
+
+
+
 
 
 
