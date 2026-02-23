@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SmartDoorLockTest {
 
     private SmartDoorLock lock;
+    private static final int PIN = 1234;
+    private static final int WRONG_PIN = 1235;
 
     @BeforeEach
     void init(){
@@ -27,30 +29,28 @@ public class SmartDoorLockTest {
 
     @Test
     void smartDoorLockShouldBeLockWithPin(){
-        lock.setPin(1234);
+        lock.setPin(PIN);
         lock.lock();
         assertTrue(lock.isLocked());
     }
 
     @Test
     void smartDoorLockShouldBeUnlockAfterLock(){
-        lock.setPin(1234);
+        lock.setPin(PIN);
         lock.lock();
-        lock.unlock(1234);
+        lock.unlock(PIN);
         assertFalse(lock.isLocked());
     }
 
     @Test
-    void smartDoorLockShouldIncrementCountAfterFailedUnlock(){
-        lock.setPin(1234);
+    void smartDoorLockShouldBeBlocked(){
+        lock.setPin(PIN);
         lock.lock();
-        lock.unlock(1235);
+        lock.unlock(WRONG_PIN);
         assertTrue(lock.isLocked());
         assertEquals(1, lock.getFailedAttempts());
+        assertTrue(lock.isBlocked());
     }
-
-
-
 
 
 
