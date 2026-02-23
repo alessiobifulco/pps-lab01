@@ -51,6 +51,7 @@ public class SmartDoorLockImpl implements SmartDoorLock {
 
     @Override
     public void reset() {
-
+        pin = Optional.empty();
+        countFailedAttempt = 0;
     }
 }

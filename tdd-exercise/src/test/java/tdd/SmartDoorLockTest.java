@@ -43,7 +43,7 @@ public class SmartDoorLockTest {
     }
 
     @Test
-    void smartDoorLockShouldBeBlocked(){
+    void smartDoorLockShouldBeBlock(){
         lock.setPin(PIN);
         lock.lock();
         lock.unlock(WRONG_PIN);
@@ -53,5 +53,15 @@ public class SmartDoorLockTest {
     }
 
 
+    @Test
+    void smartDoorLockShouldBeReset(){
+        lock.setPin(PIN);
+        lock.lock();
+        lock.unlock(WRONG_PIN);
+        lock.reset();
+        assertThrows(IllegalStateException.class, lock::lock);
+        assertFalse(lock.isBlocked());
+        assertEquals(0, lock.getFailedAttempts());
+    }
 
 }
