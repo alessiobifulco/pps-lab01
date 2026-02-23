@@ -28,4 +28,6 @@ public interface BankAccount {
      * @param amount the amount of the withdrawal
      */
     void withdraw(int userID, double amount);
+
+    void withdrawWithFEE(int userID, double basicWithdraw);
 }
