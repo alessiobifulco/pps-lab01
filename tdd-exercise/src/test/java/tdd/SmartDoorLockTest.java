@@ -3,12 +3,14 @@ package tdd;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class SmartDoorLockTest {
 
     private SmartDoorLock lock;
-    private static final int PIN = 1234;
+    private static final int BASE_PIN = 1234;
     private static final int WRONG_PIN = 1235;
 
     @BeforeEach
@@ -17,7 +19,7 @@ public class SmartDoorLockTest {
     }
 
     @Test
-    public void smartDoorLockShouldBeLockedBlocked() {
+    public void smartDoorLockShouldNotBeLockedAndBlocked() {
         assertFalse(lock.isLocked());
         assertFalse(lock.isBlocked());
     }
@@ -28,34 +30,35 @@ public class SmartDoorLockTest {
     }
 
     @Test
-    void smartDoorLockShouldBeLockWithPin(){
-        lock.setPin(PIN);
+    void smartDoorLockShouldLockWithPin(){
+        lock.setPin(BASE_PIN);
         lock.lock();
         assertTrue(lock.isLocked());
     }
 
     @Test
-    void smartDoorLockShouldBeUnlockAfterLock(){
-        lock.setPin(PIN);
+    void smartDoorLockShouldUnlockAfterLock(){
+        lock.setPin(BASE_PIN);
         lock.lock();
-        lock.unlock(PIN);
+        lock.unlock(BASE_PIN);
         assertFalse(lock.isLocked());
     }
 
     @Test
-    void smartDoorLockShouldBeBlock(){
-        lock.setPin(PIN);
+    void smartDoorLockShouldBlock(){
+        lock.setPin(BASE_PIN);
         lock.lock();
-        lock.unlock(WRONG_PIN);
+        IntStream.range(0, lock.getMaxAttempts())
+                .forEach(i -> lock.unlock(WRONG_PIN));
         assertTrue(lock.isLocked());
-        assertEquals(1, lock.getFailedAttempts());
+        assertEquals(lock.getMaxAttempts(), lock.getFailedAttempts());
         assertTrue(lock.isBlocked());
     }
 
 
     @Test
-    void smartDoorLockShouldBeReset(){
-        lock.setPin(PIN);
+    void smartDoorLockShouldReset(){
+        lock.setPin(BASE_PIN);
         lock.lock();
         lock.unlock(WRONG_PIN);
         lock.reset();
@@ -64,4 +67,12 @@ public class SmartDoorLockTest {
         assertEquals(0, lock.getFailedAttempts());
     }
 
+    @Test
+    void smartDoorLockPinShouldNotBeSet(){
+        lock.setPin(BASE_PIN);
+        lock.lock();
+        lock.setPin(WRONG_PIN);
+        lock.unlock(WRONG_PIN);
+        assertTrue(lock.isLocked());
+    }
 }

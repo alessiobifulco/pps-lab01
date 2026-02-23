@@ -1,6 +1,5 @@
 package tdd;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 public class SmartDoorLockImpl implements SmartDoorLock {
@@ -10,12 +9,12 @@ public class SmartDoorLockImpl implements SmartDoorLock {
 
     @Override
     public void setPin(int pin) {
-        this.pin = Optional.of(pin);
+        this.pin = (this.isLock) ? this.pin : Optional.of(pin);
     }
 
     @Override
     public void unlock(int pin) {
-        this.isLock = !(this.pin.isPresent() && this.pin.get() == pin && this.countFailedAttempt == 0);
+        this.isLock = !(this.pin.isPresent() && this.pin.get().equals(pin) && this.countFailedAttempt < getMaxAttempts());
         if (this.isLock){
             countFailedAttempt++;
         }
@@ -36,7 +35,7 @@ public class SmartDoorLockImpl implements SmartDoorLock {
 
     @Override
     public boolean isBlocked() {
-        return countFailedAttempt > getMaxAttempts();
+        return countFailedAttempt >= getMaxAttempts();
     }
 
     @Override
