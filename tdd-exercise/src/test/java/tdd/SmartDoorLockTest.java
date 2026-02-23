@@ -62,6 +62,8 @@ public class SmartDoorLockTest {
         assertThrows(IllegalStateException.class, lock::lock);
         assertFalse(lock.isBlocked());
         assertEquals(0, lock.getFailedAttempts());
+        lock.unlock(BASE_PIN);
+        assertFalse(lock.isLocked());
     }
 
     @Test
@@ -80,6 +82,28 @@ public class SmartDoorLockTest {
         assertThrows(IllegalStateException.class, lock::lock);
         setBasePinAndLock();
         assertTrue(lock.isLocked());
+    }
+
+    @Test
+    void smartDoorLockUnlockWithoutLockShouldDoNothing(){
+        lock.setPin(BASE_PIN);
+        lock.unlock(BASE_PIN);
+        assertFalse(lock.isLocked());
+        assertEquals(0, lock.getFailedAttempts());
+    }
+
+    @Test
+    void smartDoorLockShouldRemainBlockedAfterMaxAttempts() {
+        setBasePinAndLock();
+        IntStream.range(0, lock.getMaxAttempts())
+                .forEach(i -> lock.unlock(WRONG_PIN));
+        assertTrue(lock.isBlocked());
+        assertTrue(lock.isLocked());
+        assertEquals(lock.getMaxAttempts(), lock.getFailedAttempts());
+        lock.unlock(BASE_PIN);
+        assertTrue(lock.isBlocked());
+        assertTrue(lock.isLocked());
+        assertEquals(lock.getMaxAttempts(), lock.getFailedAttempts());
     }
 
     private void setBasePinAndLock(){
