@@ -12,6 +12,8 @@ public class SmartDoorLockTest {
     private SmartDoorLock lock;
     private static final int BASE_PIN = 1234;
     private static final int WRONG_PIN = 1235;
+    private static final int INVALID_PIN_TOO_HIGH = 12345;
+    private static final int INVALID_PIN_NEGATIVE = -1;
 
     @BeforeEach
     void init(){
@@ -46,8 +48,7 @@ public class SmartDoorLockTest {
     @Test
     void smartDoorLockShouldBlock(){
         setBasePinAndLock();
-        IntStream.range(0, lock.getMaxAttempts())
-                .forEach(i -> lock.unlock(WRONG_PIN));
+        failUntilMaxAttempts();
         assertTrue(lock.isLocked());
         assertEquals(lock.getMaxAttempts(), lock.getFailedAttempts());
         assertTrue(lock.isBlocked());
@@ -76,9 +77,9 @@ public class SmartDoorLockTest {
 
     @Test
     void smartDoorLockPinMaxAndMin(){
-        lock.setPin(12345);
+        lock.setPin(INVALID_PIN_TOO_HIGH);
         assertThrows(IllegalStateException.class, lock::lock);
-        lock.setPin(-1);
+        lock.setPin(INVALID_PIN_NEGATIVE);
         assertThrows(IllegalStateException.class, lock::lock);
         setBasePinAndLock();
         assertTrue(lock.isLocked());
@@ -95,8 +96,7 @@ public class SmartDoorLockTest {
     @Test
     void smartDoorLockShouldRemainBlockedAfterMaxAttempts() {
         setBasePinAndLock();
-        IntStream.range(0, lock.getMaxAttempts())
-                .forEach(i -> lock.unlock(WRONG_PIN));
+        failUntilMaxAttempts();
         assertTrue(lock.isBlocked());
         assertTrue(lock.isLocked());
         assertEquals(lock.getMaxAttempts(), lock.getFailedAttempts());
@@ -109,5 +109,10 @@ public class SmartDoorLockTest {
     private void setBasePinAndLock(){
         lock.setPin(BASE_PIN);
         lock.lock();;
+    }
+
+    private void failUntilMaxAttempts(){
+        IntStream.range(0, lock.getMaxAttempts())
+                .forEach(i -> lock.unlock(WRONG_PIN));
     }
 }
