@@ -16,7 +16,9 @@ class SimpleBankAccountTest {
     private static final int INITIAL_AMOUNT = 0;
     private static final int BASIC_DEPOSIT = 100;
     private static final int WRONG_ID = 2;
-
+    private static final int BASIC_WITHDRAW = 50;
+    private static final int FEE = 1;
+    private static final int NEGATIVE_AMOUNT = -1;
 
     @BeforeEach
     void beforeEach(){
@@ -44,9 +46,7 @@ class SimpleBankAccountTest {
 
     @Test
     void testWithdraw() {
-        bankAccount.deposit(accountHolder.id(), BASIC_DEPOSIT);
-        bankAccount.withdraw(accountHolder.id(), BASIC_DEPOSIT);
-        assertEquals(INITIAL_AMOUNT, bankAccount.getBalance());
+        depositFollowedByWithdraw(BASIC_DEPOSIT, INITIAL_AMOUNT);
     }
 
     @Test
@@ -56,4 +56,41 @@ class SimpleBankAccountTest {
         assertEquals(BASIC_DEPOSIT, bankAccount.getBalance());
     }
 
+    @Test
+    void testWithdrawNegativeAmount(){
+        depositFollowedByWithdraw(NEGATIVE_AMOUNT, BASIC_DEPOSIT);
+    }
+
+    @Test
+    void testWithdrawNotAllowedAmount(){
+        depositFollowedByWithdraw(BASIC_DEPOSIT+1, BASIC_DEPOSIT);
+    }
+
+    @Test
+    void testNegativeDeposit(){
+        bankAccount.deposit(accountHolder.id(), NEGATIVE_AMOUNT);
+        assertEquals(INITIAL_AMOUNT, bankAccount.getBalance());
+    }
+
+    @Test
+    void testWithdrawWithFee(){
+        depositFollowedByWithdrawWithFee(BASIC_WITHDRAW, BASIC_WITHDRAW-FEE);
+    }
+
+    @Test
+    void testWithdrawWithFeeAmountNotAllowed(){
+        depositFollowedByWithdrawWithFee(BASIC_DEPOSIT, BASIC_DEPOSIT);
+    }
+
+    private void depositFollowedByWithdraw(double amountToWithdraw, double expected){
+        bankAccount.deposit(accountHolder.id(), BASIC_DEPOSIT);
+        bankAccount.withdraw(accountHolder.id(), amountToWithdraw);
+        assertEquals(expected, bankAccount.getBalance());
+    }
+
+    private void depositFollowedByWithdrawWithFee(double amountToWithdraw, double expected){
+        bankAccount.deposit(accountHolder.id(), BASIC_DEPOSIT);
+        bankAccount.withdrawWithFEE(accountHolder.id(), amountToWithdraw);
+        assertEquals(expected, bankAccount.getBalance());
+    }
 }
