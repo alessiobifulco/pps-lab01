@@ -1,23 +1,34 @@
 package tdd;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MinMaxStackImpl implements MinMaxStack {
 
     private final List<Integer> stack = new ArrayList<>();
+    private int currentMin;
+    private int currentMax;
 
     @Override
     public void push(int value) {
+        if (stack.isEmpty()) {
+            currentMin = value;
+            currentMax = value;
+        } else {
+            currentMin = Math.min(currentMin, value);
+            currentMax = Math.max(currentMax, value);
+        }
         stack.add(value);
     }
 
     @Override
     public int pop() {
         checkIfStackEmpty();
-        int tmp = stack.get(stack.size() -1);
-        stack.remove(stack.size() -1);
+        int tmp = stack.remove(stack.size() - 1);
+        if (!stack.isEmpty()) {
+                currentMin = stack.stream().min(Integer::compare).orElseThrow();
+                currentMax = stack.stream().max(Integer::compare).orElseThrow();
+        }
         return tmp;
     }
 
@@ -30,13 +41,13 @@ public class MinMaxStackImpl implements MinMaxStack {
     @Override
     public int getMin() {
         checkIfStackEmpty();
-        return Collections.min(stack);
+        return currentMin;
     }
 
     @Override
     public int getMax() {
         checkIfStackEmpty();
-        return Collections.max(stack);
+        return currentMax;
     }
 
     @Override
