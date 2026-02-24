@@ -29,5 +29,4 @@ public interface BankAccount {
      */
     void withdraw(int userID, double amount);
 
-    void withdrawWithFEE(int userID, double basicWithdraw);
 }
