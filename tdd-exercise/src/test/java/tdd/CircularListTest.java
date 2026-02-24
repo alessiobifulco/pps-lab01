@@ -1,16 +1,51 @@
 package tdd;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * The test suite for testing the CircularList implementation
  */
 public class CircularListTest {
-    @Test
-    public void todo() {
-        assertTrue(true);
+
+    private CircularQueue queue;
+    private static final int DEFAULT_SIZE = 0;
+    private static final int DEFAULT_VALUE = 1;
+
+    @BeforeEach
+    void init(){
+        queue = new CircularQueueImpl();
     }
+
+    @Test
+    void testQueueInitialSize(){
+        assertEquals(0, queue.size());
+    }
+    @Test
+    void testQueueInitialStateIsEmpty(){
+        assertTrue(queue.isEmpty());
+    }
+
+    @Test
+    void testQueueAddChangesStateAndSize(){
+        queue.add(DEFAULT_VALUE);
+        assertEquals(DEFAULT_VALUE, queue.size());
+        assertFalse(queue.isEmpty());
+    }
+
+    @Test
+    void testQueueRemoveChangesStateAndSize(){
+        queue.add(DEFAULT_VALUE);
+        queue.remove();
+        assertEquals(DEFAULT_SIZE, queue.size());
+        assertTrue(queue.isEmpty());
+    }
+
+    @Test
+    void testQueueRemoveThrowExceptionIfEmpty(){
+        assertThrows(IllegalStateException.class, this.queue::remove);
+    }
+
 }
