@@ -70,11 +70,9 @@ class SimpleBankAccountTest {
         assertEquals(INITIAL_AMOUNT, bankAccount.getBalance());
     }
 
-
     private void depositFollowedByWithdraw(double amountToWithdraw, double expected){
         bankAccount.deposit(accountHolder.id(), BASIC_DEPOSIT);
         bankAccount.withdraw(accountHolder.id(), amountToWithdraw);
         assertEquals(expected, bankAccount.getBalance());
     }
-
 }

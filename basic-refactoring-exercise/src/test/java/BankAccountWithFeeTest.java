@@ -1,12 +1,10 @@
 import example.model.AccountHolder;
 import example.model.BankAccount;
 import example.model.BankAccountWithFee;
-import example.model.SimpleBankAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 
 public class BankAccountWithFeeTest {
 
@@ -52,9 +50,29 @@ public class BankAccountWithFeeTest {
 
     @Test
     void testWithdrawWithFEE(){
-        bankAccount.deposit(accountHolder.id(), BASIC_DEPOSIT);
-        bankAccount.withdraw(accountHolder.id(), BASIC_WITHDRAW);
-        assertEquals(BASIC_DEPOSIT - BASIC_WITHDRAW - FEE, bankAccount.getBalance());
+        depositFollowedByWithdraw(BASIC_WITHDRAW, BASIC_DEPOSIT - BASIC_WITHDRAW - FEE);
     }
 
+    @Test
+    void testWrongWithdraw() {
+        bankAccount.deposit(accountHolder.id(), BASIC_DEPOSIT);
+        bankAccount.withdraw(WRONG_ID, BASIC_DEPOSIT);
+        assertEquals(BASIC_DEPOSIT, bankAccount.getBalance());
+    }
+
+    @Test
+    void testWithdrawNegativeAmount(){
+        depositFollowedByWithdraw(NEGATIVE_AMOUNT, BASIC_DEPOSIT);
+    }
+
+    @Test
+    void testWithdrawNotAllowedAmount(){
+        depositFollowedByWithdraw(BASIC_DEPOSIT+1, BASIC_DEPOSIT);
+    }
+
+    private void depositFollowedByWithdraw(double amountToWithdraw, double expected){
+        bankAccount.deposit(accountHolder.id(), BASIC_DEPOSIT);
+        bankAccount.withdraw(accountHolder.id(), amountToWithdraw);
+        assertEquals(expected, bankAccount.getBalance());
+    }
 }
