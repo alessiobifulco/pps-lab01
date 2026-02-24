@@ -3,6 +3,7 @@ package tdd;
 import java.util.Optional;
 
 public class SmartDoorLockImpl implements SmartDoorLock {
+
     private static final int MAX_ATTEMPTS = 3;
     private Optional<Integer> pin = Optional.empty();
     private boolean locked;
@@ -12,15 +13,18 @@ public class SmartDoorLockImpl implements SmartDoorLock {
 
     @Override
     public void setPin(int pin) {
-        this.pin = (!locked && pin >= MIN_PIN && pin <= MAX_PIN) ? Optional.of(pin) : Optional.empty();
+        this.pin = (!locked && pin >= MIN_PIN && pin <= MAX_PIN) ? Optional.of(pin) : this.pin;
     }
 
     @Override
     public void unlock(int pin) {
-        if (!isBlocked() && this.pin.isPresent()) {
-            boolean correctPin = this.pin.get().equals(pin);
-            locked = !correctPin;
-            countFailedAttempt += correctPin ? 0 : 1;
+        if (this.pin.isPresent() && this.locked && !isBlocked()) {
+            if (this.pin.get().equals(pin)) {
+                this.locked = false;
+                this.countFailedAttempt = 0;
+            } else {
+                this.countFailedAttempt++;
+            }
         }
     }
 

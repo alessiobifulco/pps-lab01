@@ -21,7 +21,7 @@ public class SmartDoorLockTest {
     }
 
     @Test
-    public void smartDoorLockShouldNotBeLockedAndBlocked() {
+     void smartDoorLockShouldNotBeLockedAndBlocked() {
         assertFalse(lock.isLocked());
         assertFalse(lock.isBlocked());
     }
@@ -108,7 +108,7 @@ public class SmartDoorLockTest {
 
     private void setBasePinAndLock(){
         lock.setPin(BASE_PIN);
-        lock.lock();;
+        lock.lock();
     }
 
     private void failUntilMaxAttempts(){
