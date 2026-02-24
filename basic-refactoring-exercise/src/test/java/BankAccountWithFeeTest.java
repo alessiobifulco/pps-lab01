@@ -1,5 +1,6 @@
 import example.model.AccountHolder;
 import example.model.BankAccount;
+import example.model.BankAccountWithFee;
 import example.model.SimpleBankAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ public class BankAccountWithFeeTest {
     @BeforeEach
     void beforeEach(){
         accountHolder = new AccountHolder("Mario", "Rossi", 1);
-        bankAccount = new SimpleBankAccount(accountHolder, 0);
+        bankAccount = new BankAccountWithFee(accountHolder, 0);
     }
 
     @Test
