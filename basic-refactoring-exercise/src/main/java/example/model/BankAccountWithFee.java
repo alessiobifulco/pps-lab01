@@ -9,4 +9,9 @@ public class BankAccountWithFee extends SimpleBankAccount{
         super(holder, balance);
     }
 
+    @Override
+    public void withdraw(final int userID, final double amount) {
+        super.withdraw(userID, amount + FEE);
+    }
+
 }

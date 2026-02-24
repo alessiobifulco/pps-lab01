@@ -38,7 +38,7 @@ public class SimpleBankAccount implements BankAccount {
         return amount > 0;
     }
 
-    protected boolean checkUser(final int id) {
+    private boolean checkUser(final int id) {
         return this.holder.id() == id;
     }
 
