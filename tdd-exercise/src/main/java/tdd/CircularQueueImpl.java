@@ -7,6 +7,7 @@ public class CircularQueueImpl implements CircularQueue {
 
     List<Integer> queue = new ArrayList<>();
     private static final int MAX_CAPACITY = 3;
+    private static final int INDEX_ZERO = 0;
 
     @Override
     public int size() {
@@ -29,10 +30,7 @@ public class CircularQueueImpl implements CircularQueue {
     @Override
     public int remove(){
         checkIfQueueIsEmpty();
-        int tmp = queue.get(0);
-        queue.remove(0);
-
-        return tmp;
+        return queue.remove(INDEX_ZERO);
     }
 
     @Override
@@ -43,7 +41,7 @@ public class CircularQueueImpl implements CircularQueue {
     @Override
     public int peek(){
         checkIfQueueIsEmpty();
-        return queue.get(0);
+        return queue.get(INDEX_ZERO);
     }
 
     private void checkIfQueueIsEmpty(){

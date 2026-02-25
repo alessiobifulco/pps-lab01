@@ -3,6 +3,8 @@ package tdd;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.stream.IntStream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -13,6 +15,8 @@ public class CircularListTest {
     private CircularQueue queue;
     private static final int DEFAULT_SIZE = 0;
     private static final int DEFAULT_VALUE = 1;
+    private static final int EXPECTED_SIZE = 1;
+    private static final int ADDITIONAL_TEN = 10;
 
     @BeforeEach
     void init(){
@@ -21,7 +25,7 @@ public class CircularListTest {
 
     @Test
     void testQueueInitialSize(){
-        assertEquals(0, queue.size());
+        assertEquals(DEFAULT_SIZE, queue.size());
     }
     @Test
     void testQueueInitialStateIsEmpty(){
@@ -31,7 +35,7 @@ public class CircularListTest {
     @Test
     void testQueueAddChangesStateAndSize(){
         queue.add(DEFAULT_VALUE);
-        assertEquals(DEFAULT_VALUE, queue.size());
+        assertEquals(EXPECTED_SIZE, queue.size());
         assertFalse(queue.isEmpty());
     }
 
@@ -51,7 +55,7 @@ public class CircularListTest {
     @Test
     void testRemoveOrderFirstInFirstOut(){
         queue.add(DEFAULT_VALUE);
-        queue.add(DEFAULT_VALUE +1);
+        queue.add(DEFAULT_VALUE + DEFAULT_VALUE);
         assertEquals(DEFAULT_VALUE, queue.remove());
     }
 
@@ -71,14 +75,29 @@ public class CircularListTest {
     @Test
     void testAddWhenFullOverwriteOldestElement(){
         fillQueueTillMaxCapacity();
-        queue.add(DEFAULT_VALUE -1);
-        assertEquals(DEFAULT_VALUE +1, queue.peek());
+        queue.add(DEFAULT_VALUE);
+        assertEquals(DEFAULT_VALUE + DEFAULT_VALUE, queue.peek());
+    }
+
+    @Test
+    void testMultiplePeekSameValue(){
+        fillQueueTillMaxCapacity();
+        assertEquals(DEFAULT_VALUE, queue.peek());
+        assertEquals(DEFAULT_VALUE, queue.peek());
+        assertEquals(DEFAULT_VALUE, queue.peek());
+    }
+
+    @Test
+    void testMultipleAddWhenFullOverwriteOldestElem(){
+        fillQueueTillMaxCapacity();
+        IntStream.range(0, queue.maxCapacity())
+                .forEach(i -> queue.add(DEFAULT_VALUE + ADDITIONAL_TEN + i));
+        assertEquals(DEFAULT_VALUE + ADDITIONAL_TEN, queue.peek());
+        assertEquals(queue.maxCapacity(), queue.size());
     }
 
     private void fillQueueTillMaxCapacity(){
-        for (int i = 0; i < queue.maxCapacity(); i++){
-            queue.add(DEFAULT_VALUE + i);
-        }
+        IntStream.range(0, queue.maxCapacity())
+                .forEach(i -> queue.add(DEFAULT_VALUE + i));
     }
-
 }
