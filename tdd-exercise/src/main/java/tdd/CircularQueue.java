@@ -17,6 +17,8 @@ public interface CircularQueue {
     int size();
     boolean isEmpty();
     void add(int elem);
-    void remove();
+    int remove();
+    int maxCapacity();
+    int peek();
 
 }

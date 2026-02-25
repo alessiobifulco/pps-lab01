@@ -48,4 +48,37 @@ public class CircularListTest {
         assertThrows(IllegalStateException.class, this.queue::remove);
     }
 
+    @Test
+    void testRemoveOrderFirstInFirstOut(){
+        queue.add(DEFAULT_VALUE);
+        queue.add(DEFAULT_VALUE +1);
+        assertEquals(DEFAULT_VALUE, queue.remove());
+    }
+
+    @Test
+    void testSizeDoesNotExceedCapacityWhenFull(){
+        fillQueueTillMaxCapacity();
+        assertEquals(queue.maxCapacity(), queue.size());
+        queue.add(DEFAULT_VALUE);
+        assertEquals(queue.maxCapacity(), queue.size());
+    }
+
+    @Test
+    void testPeekThrowExceptionIfQueueIsEmpty(){
+        assertThrows(IllegalStateException.class, this.queue::peek);
+    }
+
+    @Test
+    void testAddWhenFullOverwriteOldestElement(){
+        fillQueueTillMaxCapacity();
+        queue.add(DEFAULT_VALUE -1);
+        assertEquals(DEFAULT_VALUE +1, queue.peek());
+    }
+
+    private void fillQueueTillMaxCapacity(){
+        for (int i = 0; i < queue.maxCapacity(); i++){
+            queue.add(DEFAULT_VALUE + i);
+        }
+    }
+
 }
